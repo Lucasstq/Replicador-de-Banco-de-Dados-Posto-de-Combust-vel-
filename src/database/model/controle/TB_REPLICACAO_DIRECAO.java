@@ -1,4 +1,4 @@
-package database.model;
+package database.model.controle;
 
 public class TB_REPLICACAO_DIRECAO {
     private long id;

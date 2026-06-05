@@ -1,4 +1,4 @@
-package database.model;
+package database.model.controle;
 
 public class TB_REPLICACAO_PROCESSO {
     private long id;

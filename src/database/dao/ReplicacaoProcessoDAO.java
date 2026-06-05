@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ReplicacaoProcessoDAO {
 
-    private Connection connection;
+    private final Connection connection;
 
     private static final String SQL_SELECT_ALL = "SELECT * FROM TB_REPLICACAO_PROCESSO";
 

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessoTabelaDAO {
-    Connection connection;
+    private final Connection connection;
 
     public static final String SQL_SELECT_BY_PROCESSO_HABILITADO =
             "SELECT * FROM TB_REPLICACAO_PROCESSO_TABELA WHERE PROCESSO_ID = ? AND HABILITADO = TRUE";

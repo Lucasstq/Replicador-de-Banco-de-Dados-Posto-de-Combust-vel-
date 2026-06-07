@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 
-public class TabelaReplicacaoProcesso extends JFrame {
+public class TabelaReplicacaoProcessoView extends JFrame {
     /*
         * (JFrame) tem 3 campos de texto e um checkbox,
         * para o usuário preencher os dados de um processo de replicação.
@@ -20,7 +20,7 @@ public class TabelaReplicacaoProcesso extends JFrame {
     private JButton bntDeletar;
     private JButton bntAdicionar;
 
-    public TabelaReplicacaoProcesso(){
+    public TabelaReplicacaoProcessoView(){
         setTitle("Tabela de Replicação de Processo");
         setSize(620, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,7 +78,7 @@ public class TabelaReplicacaoProcesso extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            TabelaReplicacaoProcesso tabela = new TabelaReplicacaoProcesso();
+            TabelaReplicacaoProcessoView tabela = new TabelaReplicacaoProcessoView();
             tabela.setVisible(true);
         });
     }

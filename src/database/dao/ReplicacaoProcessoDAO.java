@@ -32,7 +32,7 @@ public class ReplicacaoProcessoDAO {
     private PreparedStatement pstUpdate;
     private PreparedStatement pstDelete;
 
-    public ReplicacaoProcessoDAO(Connection connection) throws Exception {
+    public ReplicacaoProcessoDAO(Connection connection) throws SQLException {
         this.connection = connection;
         this.pstSelectAll = connection.prepareStatement(SQL_SELECT_ALL);
         this.pstSelectById = connection.prepareStatement(SQL_SELECT_BY_ID);

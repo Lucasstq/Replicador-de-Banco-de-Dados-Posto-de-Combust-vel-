@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplicacaoDirecao {
+public class ReplicacaoDirecaoDAO {
     private final Connection conn;
 
     public static final String SQL_SELECT_BY_PROCESSO_HABILITADO =
@@ -39,7 +39,7 @@ public class ReplicacaoDirecao {
     private PreparedStatement pstUpdate;
     private PreparedStatement pstDelete;
 
-    public ReplicacaoDirecao(Connection conn) throws SQLException {
+    public ReplicacaoDirecaoDAO(Connection conn) throws SQLException {
         this.conn = conn;
         this.pstSelectByProcessoHabilitado = conn.prepareStatement(SQL_SELECT_BY_PROCESSO_HABILITADO);
         this.pstSelectAll = conn.prepareStatement(SQL_SELECT_ALL);

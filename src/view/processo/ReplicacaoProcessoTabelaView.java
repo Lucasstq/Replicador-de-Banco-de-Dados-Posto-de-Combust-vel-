@@ -1,4 +1,4 @@
-package view;
+package view.processo;
 
 import database.model.controle.TB_REPLICACAO_PROCESSO_TABELA;
 

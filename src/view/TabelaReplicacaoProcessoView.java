@@ -2,6 +2,7 @@ package view;
 
 import database.dao.ReplicacaoProcessoDAO;
 import database.model.controle.TB_REPLICACAO_PROCESSO;
+import view.processo.ConsultaProcessoDialog;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -91,6 +92,7 @@ public class TabelaReplicacaoProcessoView extends JFrame {
         ckHabilitado.setBounds(10, 170, 120, 25);
         getContentPane().add(ckHabilitado);
 
+        // Os campos comecam indisponiveis para escrita dos dados
         txtId.setEnabled(false);
         txtProcesso.setEnabled(false);
         txtDescricao.setEnabled(false);
@@ -100,9 +102,12 @@ public class TabelaReplicacaoProcessoView extends JFrame {
 
         bntAdicionar.addActionListener(e -> {
             modoTela = ModoTela.INSERT;
+
+            // Os campos comecam vazios para a escrita dos dados
             txtId.setText("");
             txtProcesso.setText("");
             txtDescricao.setText("");
+            // Habilita o campo para escrita dos dados
             txtProcesso.setEnabled(true);
             txtDescricao.setEnabled(true);
             ckHabilitado.setEnabled(true);
@@ -149,24 +154,23 @@ public class TabelaReplicacaoProcessoView extends JFrame {
 
         bntBuscar.addActionListener(e ->{
             try {
-                if (txtId.getText().trim().isEmpty())  {
-                    JOptionPane.showMessageDialog(this, "O campo ID é obrigatório para busca.");
-                    return;
-                }
-                long id = Long.parseLong(txtId.getText());
-                TB_REPLICACAO_PROCESSO p = dao.selectById(id);
-                if (p != null) {
-                    txtProcesso.setText(p.getProcesso());
-                    txtDescricao.setText(p.getDescricao());
-                    ckHabilitado.setSelected(p.isHabilitado());
+                ConsultaProcessoDialog dialog = new ConsultaProcessoDialog(this, dao);
+                dialog.setVisible(true);
+
+                TB_REPLICACAO_PROCESSO processoSelecionado = dialog.getProcessoSelecionado();
+                if (processoSelecionado != null) {
+                    modoTela = ModoTela.UPDATE;
+                    txtId.setText(String.valueOf(processoSelecionado.getId()));
+                    txtProcesso.setText(processoSelecionado.getProcesso());
+                    txtDescricao.setText(processoSelecionado.getDescricao());
+                    ckHabilitado.setSelected(processoSelecionado.isHabilitado());
+
+                    // Habilita os campos para edição
                     txtProcesso.setEnabled(true);
                     txtDescricao.setEnabled(true);
                     ckHabilitado.setEnabled(true);
                     bntSalvar.setEnabled(true);
                     bntDeletar.setEnabled(true);
-                    modoTela = ModoTela.UPDATE;
-                } else {
-                    JOptionPane.showMessageDialog(this, "Processo não encontrado.");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

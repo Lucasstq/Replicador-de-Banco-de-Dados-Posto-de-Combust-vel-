@@ -1,8 +1,7 @@
-package view;
+package view.processo;
 
 import database.dao.ReplicacaoProcessoDAO;
 import database.model.controle.TB_REPLICACAO_PROCESSO;
-import view.processo.ConsultaProcessoDialog;
 
 import javax.swing.*;
 import java.sql.Connection;

@@ -151,7 +151,7 @@ public class TabelaReplicacaoProcessoView extends JFrame {
             }
         });
 
-        bntBuscar.addActionListener(e ->{
+        bntBuscar.addActionListener(e -> {
             try {
                 ConsultaProcessoDialog dialog = new ConsultaProcessoDialog(this, dao);
                 dialog.setVisible(true);
@@ -183,9 +183,14 @@ public class TabelaReplicacaoProcessoView extends JFrame {
                     JOptionPane.showMessageDialog(this, "O campo ID é obrigatório para exclusão.");
                     return;
                 }
+
+                int op = JOptionPane.showConfirmDialog(this, "Deseja realmente excluir o processo?", "Confirmação", JOptionPane.YES_NO_OPTION);
+                if (op != JOptionPane.YES_OPTION) return;
+
                 long id = Long.parseLong(txtId.getText());
                 dao.delete(id);
-                JOptionPane.showMessageDialog(this, "Processo excluído!");
+                JOptionPane.showMessageDialog(this, "Direcao excluída!");
+
                 modoTela = ModoTela.NENHUM;
                 txtId.setText("");
                 txtProcesso.setText("");

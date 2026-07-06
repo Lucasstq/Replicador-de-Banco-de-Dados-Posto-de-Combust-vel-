@@ -1,8 +1,11 @@
-package view;
+package view.replicacao_processo;
 
+import database.dao.ProcessoTabelaDAO;
 import database.model.controle.TB_REPLICACAO_PROCESSO_TABELA;
 
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ReplicacaoProcessoTabelaView extends JFrame {
 
@@ -14,12 +17,23 @@ public class ReplicacaoProcessoTabelaView extends JFrame {
     private JCheckBox ckHabilitado;
     private JTextArea txtWhere;
 
+    private enum ModoTela {NENHUM, INSERT, UPDATE}
+
+    ModoTela modoTela = ModoTela.NENHUM;
+
+    private Connection conn;
+    private ProcessoTabelaDAO dao;
+
     private JButton bntSalvar;
     private JButton bntBuscar;
     private JButton bntDeletar;
     private JButton bntAdicionar;
 
-    public ReplicacaoProcessoTabelaView() {
+    public ReplicacaoProcessoTabelaView(Connection connection) throws SQLException {
+
+        this.conn = connection;
+        this.dao = new ProcessoTabelaDAO(conn);
+
         setTitle("Cadastro de Tabelas");
         setSize(720, 420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,12 +110,44 @@ public class ReplicacaoProcessoTabelaView extends JFrame {
         txtWhere.setBounds(120, 280, 550, 80);
         getContentPane().add(txtWhere);
 
-    }
+        txtId.setEnabled(false);
+        cbProcesso.setEnabled(false);
+        txtTabelOrigem.setEnabled(false);
+        txtTabelDestino.setEnabled(false);
+        txtOrdem.setEnabled(false);
+        ckHabilitado.setEnabled(false);
+        txtWhere.setEnabled(false);
+        bntSalvar.setEnabled(false);
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ReplicacaoProcessoTabelaView tabela = new ReplicacaoProcessoTabelaView();
-            tabela.setVisible(true);
+        bntBuscar.addActionListener(e -> {
+            try {
+                ConsultaReplicacaoProcessoDialog dialog = new ConsultaReplicacaoProcessoDialog(this, dao);
+                dialog.setVisible(true);
+
+                TB_REPLICACAO_PROCESSO_TABELA tabela = dialog.getTabelaSelecionada();
+                if (tabela != null) {
+                    modoTela = ModoTela.UPDATE;
+                    txtId.setText(String.valueOf(tabela.getId()));
+                    cbProcesso.setSelectedItem(tabela.getProcesso_id());
+                    txtTabelOrigem.setText(tabela.getTabela_origem());
+                    txtTabelDestino.setText(tabela.getTabela_destino());
+                    txtOrdem.setText(String.valueOf(tabela.getOrdem()));
+                    ckHabilitado.setSelected(tabela.isHabilitado());
+                    txtWhere.setText(tabela.getDs_where());
+
+                    txtId.setEnabled(true);
+                    cbProcesso.setEnabled(true);
+                    txtTabelOrigem.setEnabled(true);
+                    txtTabelDestino.setEnabled(true);
+                    txtOrdem.setEnabled(true);
+                    ckHabilitado.setEnabled(true);
+                    txtWhere.setEnabled(true);
+                    bntSalvar.setEnabled(true);
+                }
+            } catch (SQLException ex) {
+                throw new RuntimeException("Erro ao buscar" + ex.getMessage());
+            }
         });
+
     }
 }

@@ -109,6 +109,7 @@ public class ReplicacaoDirecaoDAO {
 
     private TB_REPLICACAO_DIRECAO mapper(ResultSet rs) throws SQLException {
         TB_REPLICACAO_DIRECAO direcao = new TB_REPLICACAO_DIRECAO();
+        direcao.setId(rs.getLong("ID"));
         direcao.setDirecao_origem(rs.getString("DIRECAO_ORIGEM"));
         direcao.setDirecao_destino(rs.getString("DIRECAO_DESTINO"));
         direcao.setUsuario_origem(rs.getString("USUARIO_ORIGEM"));

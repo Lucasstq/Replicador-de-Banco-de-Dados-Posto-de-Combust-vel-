@@ -1,8 +1,12 @@
 package view;
 
+import database.dao.ReplicacaoDirecaoDAO;
+import database.model.controle.TB_REPLICACAO_DIRECAO;
 import database.model.controle.TB_REPLICACAO_PROCESSO;
 
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class TabelaReplicacaoDirecaoView extends JFrame {
     /*
@@ -19,6 +23,13 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
     private JPasswordField txtSenhaDestino;
     private JCheckBox ckHabilitado;
 
+    private enum ModoTela {NENHUM, INSERT, UPDATE}
+
+    ModoTela modoTela = ModoTela.NENHUM;
+
+    private Connection conn;
+    private ReplicacaoDirecaoDAO dao;
+
     /*
      * Os botoes da tela
      */
@@ -27,7 +38,12 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
     private JButton bntDeletar;
     private JButton bntAdicionar;
 
-    public TabelaReplicacaoDirecaoView() {
+    public TabelaReplicacaoDirecaoView(Connection connection) throws SQLException {
+        this.conn = connection;
+        if (this.conn != null) {
+            this.dao = new ReplicacaoDirecaoDAO(conn);
+        }
+
         setTitle("Tabela de Replicação de Direção");
         setSize(720, 430);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,13 +135,45 @@ public class TabelaReplicacaoDirecaoView extends JFrame {
         ckHabilitado = new JCheckBox("HABILITADO");
         ckHabilitado.setBounds(10, 280, 120, 25);
         getContentPane().add(ckHabilitado);
+
+        bntBuscar.addActionListener(e -> {
+            try {
+                if (dao == null) {
+                    JOptionPane.showMessageDialog(this, "Conexao indisponivel para realizar a busca.");
+                    return;
+                }
+
+                ConsultaReplicacaoDirecaoDialog dialog = new ConsultaReplicacaoDirecaoDialog(this, dao);
+                dialog.setVisible(true);
+
+                TB_REPLICACAO_DIRECAO direcao = dialog.getDirecaoSelecionada();
+                if (direcao != null) {
+                    modoTela = ModoTela.UPDATE;
+
+                    txtId.setText(String.valueOf(direcao.getId()));
+                    txtDirecaoOrigem.setText(direcao.getDirecao_origem());
+                    txtDirecaoDestino.setText(direcao.getDirecao_destino());
+                    txtUsuarioOrigem.setText(direcao.getUsuario_origem());
+                    txtUsuarioDestino.setText(direcao.getUsuario_destino());
+                    ckHabilitado.setSelected(direcao.isHabilitado());
+
+                    selecionarProcessoNoCombo(direcao.getProcesso_id());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("Erro ao buscar direcao de replicacao: " + ex.getMessage());
+            }
+        });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            TabelaReplicacaoDirecaoView tabela = new TabelaReplicacaoDirecaoView();
-            tabela.setVisible(true);
-        });
+    private void selecionarProcessoNoCombo(long processoId) {
+        for (int i = 0; i < cbProcesso.getItemCount(); i++) {
+            TB_REPLICACAO_PROCESSO processo = cbProcesso.getItemAt(i);
+            if (processo != null && processo.getId() == processoId) {
+                cbProcesso.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 }
 
